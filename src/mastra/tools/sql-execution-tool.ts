@@ -2,6 +2,8 @@ import { createTool } from '@mastra/core/tools';
 import { z } from 'zod';
 import { Client } from 'pg';
 
+
+
 const createDatabaseConnection = () => {
   return new Client({
     connectionString: process.env.DATABASE_URL,
@@ -14,6 +16,7 @@ const createDatabaseConnection = () => {
 const executeQuery = async (client: Client, query: string, params: any[] = []) => {
   try {
     console.log('Executing query:', query, 'Params:', params);
+    await client.query('SET statement_timeout = 0;');
     const result = await client.query(query, params);
     console.log('Query result:', result.rows);
     return result.rows;

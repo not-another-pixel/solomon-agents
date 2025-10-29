@@ -5,9 +5,9 @@ import z from 'zod';
 const createDatabaseConnection = () => {
   return new Client({
     connectionString: process.env.DATABASE_URL,
-    connectionTimeoutMillis: 30000, // 30 seconds
-    statement_timeout: 60000, // 1 minute
-    query_timeout: 60000, // 1 minute
+    connectionTimeoutMillis: 600000, // 30 seconds
+    statement_timeout: 600000, // 1 minute
+    query_timeout: 600000, // 1 minute
   });
 };
 
@@ -33,7 +33,7 @@ export const databaseIntrospectionTool = createTool({
       console.log('🔌 Connecting to PostgreSQL for introspection...');
       await client.connect();
       console.log('✅ Connected to PostgreSQL for introspection');
-
+      await client.query('SET statement_timeout = 0;');
       // Get all tables
       const tablesQuery = `
         SELECT

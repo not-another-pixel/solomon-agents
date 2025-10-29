@@ -182,52 +182,51 @@ const reviewAndExecuteStep = createStep({
     success: z.boolean(),
     finalSQL: z.string(),
     queryResult: z.any(),
-    modifications: z.string().optional(),
     rowCount: z.number().optional(),
     error: z.string().optional(),
   }),
-  resumeSchema: z.object({
-    approved: z.boolean().optional(),
-    modifiedSQL: z.string().optional(),
-  }),
-  suspendSchema: z.object({
-    generatedSQL: z.object({
-      sql: z.string(),
-      explanation: z.string(),
-      confidence: z.number(),
-      assumptions: z.array(z.string()),
-      tables_used: z.array(z.string()),
-    }),
-    message: z.string(),
-  }),
-  execute: async ({ inputData, resumeData, suspend, runtimeContext }) => {
+  // resumeSchema: z.object({
+  //   approved: z.boolean().optional(),
+  //   modifiedSQL: z.string().optional(),
+  // }),
+  // suspendSchema: z.object({
+  //   generatedSQL: z.object({
+  //     sql: z.string(),
+  //     explanation: z.string(),
+  //     confidence: z.number(),
+  //     assumptions: z.array(z.string()),
+  //     tables_used: z.array(z.string()),
+  //   }),
+  //   message: z.string(),
+  // }),
+  execute: async ({ inputData, runtimeContext }) => {
     const { company_id, generatedSQL } = inputData;
 
-    if (!resumeData) {
-      await suspend({
-        generatedSQL,
-        message:
-          "Do you want to approve this SQL query or make modifications? (approved: true/false, modifiedSQL: 'your modified query' if needed)",
-      });
+    // if (!resumeData) {
+    //   await suspend({
+    //     generatedSQL,
+    //     message:
+    //       "Do you want to approve this SQL query or make modifications? (approved: true/false, modifiedSQL: 'your modified query' if needed)",
+    //   });
 
-      return {
-        success: false,
-        finalSQL: generatedSQL.sql,
-        queryResult: null,
-      };
-    }
+    //   return {
+    //     success: false,
+    //     finalSQL: generatedSQL.sql,
+    //     queryResult: null,
+    //   };
+    // }
 
-    const { approved, modifiedSQL } = resumeData;
-    const finalSQL = modifiedSQL || generatedSQL.sql;
+    // const { approved, modifiedSQL } = resumeData;
+    const finalSQL = generatedSQL.sql;
 
-    if (!approved) {
-      return {
-        success: false,
-        finalSQL,
-        queryResult: null,
-        modifications: modifiedSQL ? 'Query was modified but not approved' : 'Query was not approved',
-      };
-    }
+    // if (!approved) {
+    //   return {
+    //     success: false,
+    //     finalSQL,
+    //     queryResult: null,
+    //     modifications: modifiedSQL ? 'Query was modified but not approved' : 'Query was not approved',
+    //   };
+    // }
 
     try {
       // Execute the SQL query
@@ -254,7 +253,6 @@ const reviewAndExecuteStep = createStep({
         success: executionResult.success || false,
         finalSQL,
         queryResult: executionResult.data || null,
-        modifications: modifiedSQL ? 'Query was modified by user' : undefined,
         rowCount: executionResult.rowCount || 0,
       };
     } catch (error) {
@@ -262,7 +260,6 @@ const reviewAndExecuteStep = createStep({
         success: false,
         finalSQL,
         queryResult: null,
-        modifications: modifiedSQL ? 'Query was modified by user' : undefined,
         error: `Failed to execute SQL: ${error instanceof Error ? error.message : String(error)}`,
       };
     }

@@ -1,4 +1,5 @@
-import { Storage } from "@google-cloud/storage";
+import { Storage, TransferManager } from "@google-cloud/storage";
+
 
 const storage = new Storage();
 
@@ -12,7 +13,14 @@ export async function listAllObjects(bucketName: string) {
 
 
 export async function fetchFileFromGCS(bucketName: string, fileName: string) {
-
+  console.log(`📥 Fetching file gs://${bucketName}/${fileName}...`);
   const [contents] = await storage.bucket(bucketName).file(fileName).download();
+  console.log(`📥 Fetched file gs://${bucketName}/${fileName}`);
+  return contents;
+}
+
+export async function fetchManyFilesFromGCS(bucketName: string, fileNames: string[]) {
+  const transferManager = new TransferManager(storage.bucket(bucketName));
+  const contents = await transferManager.downloadManyFiles(fileNames);
   return contents;
 }

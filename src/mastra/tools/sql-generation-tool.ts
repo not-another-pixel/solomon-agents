@@ -2,6 +2,7 @@ import { createTool } from '@mastra/core/tools';
 import { z } from 'zod';
 
 import { generateObject } from 'ai';
+import { openai } from '@ai-sdk/openai';
 
 
 const sqlGenerationSchema = z.object({
@@ -111,7 +112,7 @@ Please provide:
 5. List of tables used`;
 
       const result = await generateObject({
-        model: 'google/gemini-2.5-pro',
+        model: openai('gpt-4.1-mini'),
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt },

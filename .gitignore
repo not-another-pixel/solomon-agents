@@ -8,6 +8,8 @@ dist
 *.db-* 
 .vscode
 
+.venv 
+
 /src/generated/prisma
 
 /src/generated/prisma

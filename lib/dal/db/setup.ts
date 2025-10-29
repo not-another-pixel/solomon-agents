@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 
 let pool: Pool | null = null;
-const allowedSchemas = ["_marts", "internal"];
+const allowedSchemas = ["_marts", "internal", "raw_data"];
 export function setupDB() {
     if (!pool) {
         pool = new Pool({

@@ -4,11 +4,12 @@ import { PinoLogger } from '@mastra/loggers';
 import { sqlAgent } from './agents/sql-agent';
 import { databaseQueryWorkflow } from './workflows/database-query-workflow';
 import { metricsAgent } from './agents/metrics-agent';
+import { testingWorkflow, videoAnalysisWorkflow } from './workflows/video-analysis-workflow';
 
 export const mastra = new Mastra({
   agents: { sqlAgent, metricsAgent },
   workflows: {
-    databaseQueryWorkflow,
+    databaseQueryWorkflow, videoAnalysisWorkflow, testingWorkflow
   },
   storage: new LibSQLStore({
     // stores telemetry, evals, ... into memory storage, if it needs to persist, change to file:../mastra.db

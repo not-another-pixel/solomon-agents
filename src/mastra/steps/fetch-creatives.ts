@@ -1,1 +1,0 @@
-// Here we build the query to aggregate queries for 
